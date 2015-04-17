@@ -454,7 +454,8 @@ bool MinidumpGenerator::WriteMinidump() {
   return result_minidump && result_full_memory;
 }
 
-bool MinidumpGenerator::GenerateDumpFile(wstring* dump_path) {
+//pro :prodname
+bool MinidumpGenerator::GenerateDumpFile(std::wstring  prod,wstring* dump_path) {
   // The dump file was already set by handle or this function was previously
   // called.
   if (dump_file_ != INVALID_HANDLE_VALUE) {
@@ -462,7 +463,7 @@ bool MinidumpGenerator::GenerateDumpFile(wstring* dump_path) {
   }
 
   wstring dump_file_path;
-  if (!GenerateDumpFilePath(&dump_file_path)) {
+  if (!GenerateDumpFilePath(prod,&dump_file_path)) {
     return false;
   }
 
@@ -482,7 +483,7 @@ bool MinidumpGenerator::GenerateDumpFile(wstring* dump_path) {
   return true;
 }
 
-bool MinidumpGenerator::GenerateFullDumpFile(wstring* full_dump_path) {
+bool MinidumpGenerator::GenerateFullDumpFile(std::wstring  prod,wstring* full_dump_path) {
   // A full minidump was not requested.
   if ((dump_type_ & MiniDumpWithFullMemory) == 0) {
     return false;
@@ -495,7 +496,7 @@ bool MinidumpGenerator::GenerateFullDumpFile(wstring* full_dump_path) {
   }
 
   wstring full_dump_file_path;
-  if (!GenerateDumpFilePath(&full_dump_file_path)) {
+  if (!GenerateDumpFilePath(prod,&full_dump_file_path)) {
     return false;
   }
   full_dump_file_path.resize(full_dump_file_path.size() - 4);  // strip .dmp
@@ -561,7 +562,7 @@ MinidumpGenerator::UuidCreateType MinidumpGenerator::GetCreateUuid() {
   return create_uuid_;
 }
 
-bool MinidumpGenerator::GenerateDumpFilePath(wstring* file_path) {
+bool MinidumpGenerator::GenerateDumpFilePath(std::wstring  prod,wstring* file_path) {
   UUID id = {0};
 
   UuidCreateType create_uuid = GetCreateUuid();
@@ -572,7 +573,8 @@ bool MinidumpGenerator::GenerateDumpFilePath(wstring* file_path) {
   create_uuid(&id);
   wstring id_str = GUIDString::GUIDToWString(&id);
 
-  *file_path = dump_path_ + TEXT("\\") + id_str + TEXT(".dmp");
+  //加上产品名
+  *file_path = dump_path_ + TEXT("\\") +  prod +TEXT("_") + id_str + TEXT(".dmp");
   return true;
 }
 

@@ -896,6 +896,21 @@ void CrashGenerationServer::HandleDumpRequest(const ClientInfo& client_info) {
   SetEvent(client_info.dump_generated_handle());
 }
 
+wchar_t * GetValue(CustomClientInfo* clientinfo,wchar_t *ws_Name)
+{
+	if (clientinfo->entries == NULL)
+		return L"";
+
+	for (size_t i = 0; i < clientinfo->count; ++i)
+	{
+		if (wcscmp(ws_Name,clientinfo->entries[i].name) ==0)
+		{
+			return (wchar_t*)clientinfo->entries[i].value;
+		}
+	}
+	return L"";
+}
+
 bool CrashGenerationServer::GenerateDump(const ClientInfo& client,
                                          std::wstring* dump_path) {
   assert(client.pid() != 0);
@@ -922,7 +937,15 @@ bool CrashGenerationServer::GenerateDump(const ClientInfo& client,
                                    client.assert_info(),
                                    client.dump_type(),
                                    true);
-  if (!dump_generator.GenerateDumpFile(dump_path)) {
+
+  std::wstring prod = L"";
+
+  CustomClientInfo custom_client_info = client.GetCustomInfo();
+
+  prod = GetValue(&custom_client_info,L"prod");
+
+
+  if (!dump_generator.GenerateDumpFile(prod,dump_path)) {
     return false;
   }
   return dump_generator.WriteMinidump();

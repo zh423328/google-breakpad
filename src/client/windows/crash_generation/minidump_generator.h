@@ -73,13 +73,13 @@ class MinidumpGenerator {
   // Generate the name for the dump file that will be written to once
   // WriteMinidump() is called. Can only be called once and cannot be called
   // if the dump file is set via SetDumpFile().
-  bool GenerateDumpFile(std::wstring* dump_path);
+  bool GenerateDumpFile(std::wstring  prod,std::wstring* dump_path);
 
   // Generate the name for the full dump file that will be written to once
   // WriteMinidump() is called. Cannot be called unless the minidump type
   // includes MiniDumpWithFullMemory. Can only be called once and cannot be
   // called if the dump file is set via SetFullDumpFile().
-  bool GenerateFullDumpFile(std::wstring* full_dump_path);
+  bool GenerateFullDumpFile(std::wstring  prod,std::wstring* full_dump_path);
 
   void SetAdditionalStreams(
       MINIDUMP_USER_STREAM_INFORMATION* additional_streams) {
@@ -125,7 +125,7 @@ class MinidumpGenerator {
   UuidCreateType GetCreateUuid();
 
   // Returns the path for the file to write dump to.
-  bool GenerateDumpFilePath(std::wstring* file_path);
+  bool GenerateDumpFilePath(std::wstring  prod,std::wstring* file_path);
 
   // Handle to dynamically loaded DbgHelp.dll.
   HMODULE dbghelp_module_;
